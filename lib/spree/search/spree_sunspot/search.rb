@@ -15,7 +15,7 @@ module Spree
               facet("#{name}_facet")
             end
 
-            with(:price, Range.new(price.split('-').first, price.split('-').last)) if price
+            with(:price, Range.new(price.split('-').first, price.split('-').last)) if price.present?
             facet(:price) do
               conf.price_ranges.each do |range|
                 row(range) do
