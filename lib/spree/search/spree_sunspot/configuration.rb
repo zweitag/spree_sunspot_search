@@ -8,7 +8,8 @@ module Spree
                       :other_facets,
                       :show_facets,
                       :fields,
-                      :sort_fields
+                      :sort_fields,
+                      :remove_operators
 
         def initialize
           # Price ranges to be used for faceting
@@ -42,6 +43,9 @@ module Spree
             :score => :desc,
             :price => [:asc, :desc],
           }
+
+          # Do not remote operators like + and - by default
+          self.remove_operators = false
         end
 
         def display_facets

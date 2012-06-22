@@ -44,8 +44,7 @@ module Spree
           # super copies over :taxon and other variables into properties
           # as well as handles pagination
           super
-
-          @properties[:query] = params[:keywords]
+          @properties[:query] = cleanup(params[:keywords])
           @properties[:price] = params[:price]
 
           @properties[:sort] = params[:sort] || :score
@@ -54,6 +53,15 @@ module Spree
           Spree::Search::SpreeSunspot.configuration.display_facets.each do |name|
             @properties[name] = params["#{name}_facet"] if @properties[name].blank? or !params["#{name}_facet"].blank?
           end
+        end
+
+        def cleanup(keywords)
+          conf = Spree::Search::SpreeSunspot.configuration
+          keywords.dup.tap do |k|
+            if k.is_a?(String) && conf.remove_operators
+              k.gsub!(/[\-\+]/, " ")
+            end
+          end if keywords.present?
         end
 
       end
