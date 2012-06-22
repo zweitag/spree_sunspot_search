@@ -39,7 +39,7 @@ module Spree
 
         def prepare(params)
           super
-          @properties[:query] = params[:keywords]
+          @properties[:query] = cleanup(params[:keywords])
           @properties[:price] = params[:price]
 
           @properties[:sort] = params[:sort] || :score
@@ -52,6 +52,15 @@ module Spree
             @properties[name] = params["#{name}_facet"]
           end
 
+        end
+
+        def cleanup(keywords)
+          conf = Spree::Search::SpreeSunspot.configuration
+          keywords.dup.tap do |k|
+            if k.is_a?(String) && conf.remove_operators
+              k.gsub!(/[\-\+]/, " ")
+            end
+          end if keywords.present?
         end
 
       end
